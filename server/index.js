@@ -9,7 +9,11 @@ const app = express();
 const PORT = process.env.PORT || 5007;
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Vite default port
+    origin: [
+      'http://localhost:5173',
+      /\.vercel\.app$/,        // any vercel preview URL
+    ],
+    credentials: true,
 }));
 app.use(express.json());
 
