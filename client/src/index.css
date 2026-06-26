@@ -1,3 +1,71 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #0a0e1a;
+  color: #e2e8f0;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Animated gradient border for the scan input */
+.scan-input-wrapper {
+  position: relative;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #1e3a5f, #0f172a);
+  padding: 1px;
+}
+
+.scan-input-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  padding: 1px;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4, #8b5cf6);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Score ring animation */
+@keyframes fillRing {
+  from { stroke-dashoffset: 339.3; }
+}
+
+.ring-fill {
+  animation: fillRing 1.2s ease-out forwards;
+}
+
+/* Pulse for scanning state */
+@keyframes scanPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.scan-pulse {
+  animation: scanPulse 1.2s ease-in-out infinite;
+}
+
+/* Severity badge colors */
+.severity-CRITICAL { background: #450a0a; color: #fca5a5; border: 1px solid #7f1d1d; }
+.severity-HIGH     { background: #431407; color: #fdba74; border: 1px solid #7c2d12; }
+.severity-MEDIUM   { background: #422006; color: #fcd34d; border: 1px solid #78350f; }
+.severity-LOW      { background: #1a2e05; color: #86efac; border: 1px solid #14532d; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
