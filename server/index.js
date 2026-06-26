@@ -11,7 +11,8 @@ const PORT = process.env.PORT || 5007;
 app.use(cors({
     origin: [
       'http://localhost:5173',
-      /\.vercel\.app$/,        // any vercel preview URL
+      /\.vercel\.app$/,
+      'https://cyberscan-nu.vercel.app',
     ],
     credentials: true,
 }));
