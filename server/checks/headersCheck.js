@@ -49,8 +49,6 @@ export async function headersCheck(url) {
         'User-Agent': 'CyberScan/1.0 Security Auditor',
       },
     });
-    
-    console.log('[headersCheck] received headers:', JSON.stringify(response.headers, null, 2));
 
     const receivedHeaders = response.headers;
     const missing = [];
