@@ -1,3 +1,4 @@
+import RecentScans from './components/RecentScans';
 import { useState } from 'react';
 import ScanForm from './components/ScanForm';
 import RiskScore from './components/RiskScore';
@@ -127,6 +128,7 @@ export default function App() {
             <SSLCheck     data={result.ssl}      breakdown={result.score.breakdown.ssl} />
           </div>
         )}
+        <RecentScans />
       </main>
 
       {/* Footer */}

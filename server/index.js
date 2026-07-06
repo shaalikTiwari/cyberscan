@@ -3,13 +3,17 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
 import scanRouter from './routes/scan.js';
+import historyRouter from './routes/history.js';
+import { connectDB } from './utils/db.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5007;
 
-// Rate limiting — 10 scans per IP per 15 minutes
+// Connect to MongoDB
+connectDB();
+
 const scanLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
@@ -31,11 +35,10 @@ app.use(cors({
 
 app.use(express.json());
 
-// Apply rate limiter only to scan route
 app.use('/api/scan', scanLimiter);
 app.use('/api/scan', scanRouter);
+app.use('/api/history', historyRouter);
 
-// Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'CyberScan API running', version: '2.0.0' });
 });

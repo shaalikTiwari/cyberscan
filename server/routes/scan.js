@@ -3,19 +3,17 @@ import { headersCheck } from '../checks/headersCheck.js';
 import { pathsCheck }   from '../checks/pathsCheck.js';
 import { sslCheck }     from '../checks/sslCheck.js';
 import { calculateScore } from '../utils/scoreEngine.js';
+import Scan from '../models/Scan.js';
 
 const router = express.Router();
 
-// POST /api/scan
 router.post('/', async (req, res) => {
   const { url } = req.body;
 
-  // Presence check
   if (!url) {
     return res.status(400).json({ error: 'URL is required' });
   }
 
-  // Format check
   let parsedUrl;
   try {
     parsedUrl = new URL(url);
@@ -23,7 +21,6 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'Invalid URL format. Include http:// or https://' });
   }
 
-  // Block private/local IPs — prevent SSRF attacks
   const hostname = parsedUrl.hostname;
   const blockedHosts = ['localhost', '127.0.0.1', '0.0.0.0', '::1'];
   if (
@@ -39,18 +36,30 @@ router.post('/', async (req, res) => {
     console.log(`[CyberScan] Starting scan for: ${url}`);
     const startTime = Date.now();
 
-    // Run all three checks in parallel
     const [headersResult, pathsResult, sslResult] = await Promise.all([
       headersCheck(url),
       pathsCheck(url),
       sslCheck(url),
     ]);
 
-    // Calculate risk score
     const scoreResult = calculateScore(headersResult, pathsResult, sslResult);
-
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+
     console.log(`[CyberScan] Scan complete in ${duration}s — Score: ${scoreResult.score} (${scoreResult.label})`);
+
+    // Save to MongoDB (non-blocking — don't fail the scan if DB save fails)
+    Scan.create({
+      url,
+      duration: `${duration}s`,
+      score: {
+        score: scoreResult.score,
+        label: scoreResult.label,
+        color: scoreResult.color,
+        summary: scoreResult.summary,
+      },
+      isHttps: sslResult.isHttps,
+      certDaysLeft: sslResult.cert?.daysLeft ?? null,
+    }).catch((err) => console.error('[CyberScan] Failed to save scan:', err.message));
 
     res.json({
       url,
