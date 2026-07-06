@@ -44,11 +44,13 @@ export async function headersCheck(url) {
     const response = await axios.get(url, {
       timeout: 8000,
       maxRedirects: 5,
-      validateStatus: () => true, // accept any HTTP status
+      validateStatus: () => true,
       headers: {
         'User-Agent': 'CyberScan/1.0 Security Auditor',
       },
     });
+    
+    console.log('[headersCheck] received headers:', JSON.stringify(response.headers, null, 2));
 
     const receivedHeaders = response.headers;
     const missing = [];
