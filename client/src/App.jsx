@@ -74,8 +74,14 @@ export default function App() {
 
         {/* Error */}
         {error && (
-          <div className="mt-6 bg-red-900/20 border border-red-800/40 rounded-lg px-5 py-4 font-mono text-red-400 text-sm">
-            ✗ {error}
+          <div className="mt-6 bg-red-900/20 border border-red-800/40 rounded-lg px-5 py-4 font-mono text-red-400 text-sm flex items-start gap-3">
+            <span className="mt-0.5">✗</span>
+            <div>
+              <p>{error}</p>
+              {error.includes('Too many') && (
+                <p className="text-red-500/70 text-xs mt-1">Rate limit: 10 scans per 15 minutes per IP.</p>
+              )}
+            </div>
           </div>
         )}
 
